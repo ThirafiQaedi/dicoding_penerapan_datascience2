@@ -33,17 +33,28 @@ elif menu == "Tentang":
 
 
 # --- Memuat Model dan Pra-pemrosesan Objects ---
-try:
-    model = joblib.load("./best_model.pkl")
-except Exception as e:
-    st.error(f"Error memuat Model ML: {e}. Pastikan 'best_model.pkl' ada di direktori yang benar.")
-    st.stop() 
+
+
+# --- Cache Model & Scaler ---
+@st.cache_resource
+def load_model():
+    return joblib.load("best_model.pkl")
+
+@st.cache_resource
+def load_scaler():
+    return pickle.load(open("saved_scaler.pkl", "rb"))
 
 try:
-    scaler = pickle.load(open("./saved_scaler.pkl", 'rb')) 
+    model = load_model()
 except Exception as e:
-    st.warning(f"Peringatan: Gagal memuat scaler: {e}. Jika model Anda memerlukan scaling, ini akan menyebabkan masalah. Pastikan 'saved_scaler.pkl' ada di direktori yang benar.")
-    scaler = None 
+    st.error(f"❌ Gagal memuat model: {e}")
+    st.stop()
+
+try:
+    scaler = load_scaler()
+except Exception as e:
+    st.warning(f"Peringatan: Scaler tidak dimuat: {e}")
+    scaler = None
 
 # ---  Definisi Mapping untuk Fitur Kategorikal ---
 
@@ -388,8 +399,8 @@ if st.button('Prediksi'):
         st.write(f'Probability Safe, TIDAK Drop Out: **{prediction_proba[0][0]*100:.2f}%**')
 
         st.write("---")
-        st.info("Note: This prediction is probabilistic and should be used as an indicator. Always consider individual circumstances.")
+        st.info("Note: Prediksi ini bersifat probabilistik dan harus digunakan sebagai indikator. Selalu pertimbangkan keadaan individu secara spesifik.")
 
     except Exception as e:
-        st.error(f"An error occurred during prediction: {e}")
-        st.write("Please ensure all inputs are valid and the model is correctly loaded and configured.")
+        st.error(f"Terjadi kesalahan saat melakukan prediksi: {e}")
+        st.write("Harap pastikan semua input valid serta model telah dimuat dan dikonfigurasi dengan benar.")

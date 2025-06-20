@@ -26,36 +26,70 @@ Sumber data: https://github.com/dicodingacademy/dicoding_dataset/tree/main/stude
 
 ### Setup Environment
 
-Proyek ini dikembangkan menggunakan Python dan disarankan untuk dijalankan dalam lingkungan virtual (virtual environment) untuk mengelola dependensi secara terisolasi.
-1.  **Membuat dan Mengaktifkan Virtual Environment (venv)**
-    Buka terminal atau command prompt, lalu ikuti langkah-langkah berikut:
-    ```bash
-    # Membuat virtual environment baru bernama 'venv_attrition'
-    python3 -m venv venv_attrition
+#### Menyiapkan Lingkungan untuk Menjalankan Jupyter Notebook (.ipynb) di Google Colab dan VS Code
 
-    # Mengaktifkan virtual environment:
-    # Untuk macOS/Linux:
-    source venv_attrition/bin/activate
-    # Untuk Windows (Command Prompt):
-    venv_attrition\Scripts\activate.bat
-    # Untuk Windows (PowerShell):
-    venv_attrition\Scripts\Activate.ps1
-    ```
-    Setelah diaktifkan, akan terlihat `(venv_attrition)` di awal baris perintah yang menandakan bahwa sudah berada di lingkungan virtual.
+#### 1. Menjalankan Jupyter Notebook di Google Colab
 
-2.  **Menginstal Dependensi dari `requirements.txt`**
-    Pastikan  telah mengaktifkan virtual environment (langkah 1). Kemudian, instal semua pustaka Python yang dibutuhkan dari berkas `requirements.txt` menggunakan pip:
-    ```bash
-    pip install -r requirements.txt
-    ```
-    Ini akan menginstal semua *library* yang diperlukan.
+Google Colab adalah platform online yang memungkinkan Anda menjalankan Jupyter Notebooks di cloud tanpa perlu pengaturan pada mesin lokal.
 
-3.  **Akses Data**
-    * **Untuk Lingkungan Lokal:** Pastikan  telah mengunduh dataset dari (https://github.com/dicodingacademy/dicoding_dataset/tree/main/students_performance) dan meletakkannya di lokasi yang sesuai dengan path yang digunakan dalam skrip Python.
-    * **Untuk Google Colab:** Jika  menjalankan proyek di Google Colab maka perlu mengunggah file dataset ke Google Drive  dan melakukan *mount* Google Drive di Colab untuk mengaksesnya. Instruksi *mounting* dapat ditemukan di notebook Colab  (misalnya: `from google.colab import drive; drive.mount('/content/gdrive/')`).
+##### Panduan Langkah demi Langkah:
+1. **Buka Google Colab**:
+   - Kunjungi [Google Colab](https://colab.research.google.com/).
 
-4.  **Cara Menjalankan Skrip Python (.py)**
-    Setelah virtual environment diaktifkan dan semua dependensi terinstal, maka dapat dijalankan skrip utama proyek. Skrip utama adalah `notebook.py`. Hasil analisis, model yang disimpan, atau output lainnya akan dihasilkan sesuai dengan logika skrip.
+2. **Unggah Notebook Anda**:
+   - Klik **File** di menu kiri atas.
+   - Pilih **Upload notebook**.
+   - Pilih file `.ipynb` dari mesin lokal Anda dan klik **Open**.
+
+3. **Jalankan Notebook Anda**:
+   - Setelah diunggah, notebook Anda akan terbuka di antarmuka Colab.
+   - Anda dapat menjalankan sel notebook dengan memilih kode di dalamnya dan menekan **Shift + Enter** atau mengklik tombol play di samping sel tersebut.
+
+4. **Menggunakan Google Drive (Opsional)**:
+   - Jika file notebook Anda disimpan di Google Drive, Anda juga bisa membuka notebook langsung dari Google Drive.
+   - Klik **File > Open notebook**, kemudian pilih tab **Google Drive** untuk memilih notebook dari drive Anda.
+
+---
+
+#### 2. Menjalankan Jupyter Notebook di VS Code
+
+Untuk menjalankan Jupyter Notebook di **mesin lokal** menggunakan **VS Code**, Anda perlu menginstal beberapa alat, seperti **Python**, **Jupyter**, dan **VS Code Jupyter extension**.
+
+##### Panduan Langkah demi Langkah:
+1. **Instal VS Code**:
+   - Jika Anda belum menginstal **VS Code**, unduh dan pasang dari [sini](https://code.visualstudio.com/Download).
+
+2. **Instal Python**:
+   - Pastikan Anda sudah menginstal **Python** di sistem Anda. Anda bisa mengunduhnya dari [sini](https://www.python.org/downloads/).
+   - Setelah instalasi, periksa apakah Python terinstal dengan benar dengan menjalankan `python --version` di terminal atau command prompt.
+
+3. **Instal Jupyter**:
+   - Buka terminal atau command prompt dan instal Jupyter Notebook dengan menjalankan:
+     ```bash
+     pip install notebook
+     ```
+   - Ini akan menginstal Jupyter dan membuatnya tersedia untuk digunakan.
+
+4. **Instal Jupyter Extension di VS Code**:
+   - Buka **VS Code**.
+   - Pergi ke **Extensions** dengan mengklik ikon Extensions di sidebar (atau tekan `Ctrl + Shift + X`).
+   - Cari **"Jupyter"** dan instal **Jupyter extension** dari Microsoft.
+
+5. **Instal Python Extension di VS Code**:
+   - Cari **Python** extension di Extensions view.
+   - Instal **Python extension** dari Microsoft untuk mendukung Python di VS Code.
+
+6. **Buka Jupyter Notebook**:
+   - Buka file `.ipynb` langsung di VS Code dengan memilih **File > Open File** atau drag dan drop notebook ke VS Code.
+   - VS Code akan secara otomatis mendeteksi format notebook dan menampilkannya dalam editor yang mendukung Jupyter.
+
+7. **Pilih Python Interpreter**:
+   - Jika diminta, pilih interpreter Python yang ingin Anda gunakan dengan mengklik nama kernel di pojok kanan atas dan memilih interpreter yang sesuai. Pastikan Anda telah menginstal **Jupyter** di lingkungan yang dipilih.
+
+8. **Jalankan Notebook**:
+   - Setelah lingkungan diatur, Anda dapat menjalankan sel-sel dengan memilih kode dan menekan **Shift + Enter**, atau menggunakan tombol play.
+
+---
 
 ## Business Dashboard
 

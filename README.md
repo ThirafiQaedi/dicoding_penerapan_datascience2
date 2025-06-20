@@ -22,9 +22,9 @@ Cakupan proyek ini meliputi:
 
 ### Persiapan
 
-Sumber data: https://github.com/dicodingacademy/dicoding_dataset/tree/main/students_performance
+Sumber data: [Dataset Dicoding](https://github.com/dicodingacademy/dicoding_dataset/tree/main/students_performance)
 
-### Setup Environment
+#### **Setup Environment**
 
 #### Menyiapkan Lingkungan untuk Menjalankan Jupyter Notebook (.ipynb) di Google Colab dan VS Code
 
@@ -95,7 +95,7 @@ Untuk menjalankan Jupyter Notebook di **mesin lokal** menggunakan **VS Code**, A
 
 Dashboard ini dirancang untuk menyajikan wawasan mendalam mengenai status dropout mahasiswa. Dengan menampilkan metrik utama, tren, dan perbandingan berdasarkan beragam faktor pemicu yang teridentifikasi dari analisis, dashboard ini bertujuan membantu pihak institut dalam mengidentifikasi area fokus strategis untuk meningkatkan motivasi dan keberhasilan studi mahasiswa.
 
-🔗 URL : https://lookerstudio.google.com/reporting/e66c86a8-4304-4c63-9834-e10ab8286407
+🔗 URL Lookerstudio: [Jaya Jaya institue Student Performance dashboard](https://lookerstudio.google.com/reporting/0113074f-0ad4-4a57-900b-810672fbcd43)
 ![Jaya Jaya institue Student Performance dashboard](src/Dashboard.png)
 
 
@@ -109,35 +109,91 @@ Dashboard ini dirancang untuk menyajikan wawasan mendalam mengenai status dropou
 
 Prototype ini digunakan dengan cara meninput manual. Adapun cara menjalankannya terbagi menjadi dua yaitu secara lokal dan online.
 
-Adapun secara lokal adalah:
-1.  **Clone Repositori:**
-    Buka terminal atau Command Prompt, lalu *clone* repositori ini:
-    ```bash
-    git clone [https://github.com/hyrahmaaa/Belajar-Penerapan-Data-Science-2.git]  (https://github.com/hyrahmaaa/Belajar-Penerapan-Data-Science-2.git)
-    cd Belajar-Penerapan-Data-Science-2
-    ```
-2.  **Buat dan Aktifkan Virtual Environment:**
-    * **Untuk Windows:**
-        ```bash
-        python -m venv env
-        .\env\Scripts\activate
-        ```
-    * **Untuk macOS/Linux:**
-        ```bash
-        python3 -m venv env
-        source env/bin/activate
-        ```
-3.  **Instal Dependensi:**
-    Instal semua pustaka yang diperlukan dari `requirements.txt`:
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Jalankan Aplikasi Streamlit:**
-    ```bash
-    streamlit run app.py
-    ```
+Cara secara lokal:
+Berikut adalah langkah-langkah untuk menyiapkan lingkungan pengembangan (environment) dan menjalankan aplikasi **Streamlit** (`app.py`) yang diambil dari repository GitHub berikut:  
+[https://github.com/ThirafiQaedi/dicoding_penerapan_datascience2](https://github.com/ThirafiQaedi/dicoding_penerapan_datascience2)
 
-Untuk dapat menjalankan secara online dapat dilakukan dilink berikut : 
+## 1. Persiapkan Lingkungan Virtual
+Buat lingkungan virtual untuk mengisolasi dependensi aplikasi agar tidak bentrok dengan proyek lain.
+
+```bash
+# Membuat environment virtual
+python -m venv myenv
+
+# Mengaktifkan environment
+# Untuk Windows
+myenv\Scripts\activate
+
+# Untuk macOS/Linux
+source myenv/bin/activate
+```
+## 2. Instalasi Dependensi
+Clone repository dan install semua dependensi yang diperlukan oleh aplikasi.
+
+### Langkah-langkah:
+1. **Clone repository**:
+   Clone repository GitHub yang berisi aplikasi dengan menjalankan perintah berikut di terminal:
+   ```bash
+   git clone https://github.com/ThirafiQaedi/dicoding_penerapan_datascience2.git
+   ```
+
+2. **Masuk ke folder proyek**:
+   Setelah repository berhasil di-clone, pindah ke direktori proyek dengan perintah berikut:
+   ```bash
+   cd dicoding_penerapan_datascience2
+   ```
+
+3. **Install dependensi**:
+   Jika proyek menyediakan file `requirements.txt`, Anda bisa menginstal semua dependensi yang diperlukan dengan perintah:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   Ini akan menginstal semua paket Python yang dibutuhkan untuk menjalankan aplikasi.
+
+4. **Jika tidak ada `requirements.txt`**:
+   Jika proyek tidak menyertakan `requirements.txt`, Anda bisa menginstal dependensi secara manual. Misalnya, untuk aplikasi Streamlit, Anda harus menginstal Streamlit, Pandas, dan dependensi lainnya:
+   ```bash
+   pip install streamlit pandas numpy matplotlib seaborn scikit-learn
+   ```
+
+---
+
+## 3. Jalankan Aplikasi Streamlit
+Setelah semua dependensi diinstal, Anda dapat menjalankan aplikasi **Streamlit** dengan perintah berikut.
+
+### Langkah-langkah:
+1. **Jalankan aplikasi**:
+   Untuk memulai aplikasi Streamlit, gunakan perintah:
+   ```bash
+   streamlit run app.py
+   ```
+   
+   Perintah ini akan memulai aplikasi Streamlit pada `localhost`, dan Anda bisa mengaksesnya melalui browser dengan URL seperti:
+   ```
+   http://localhost:8501
+   ```
+
+2. **Buka aplikasi di browser**:
+   Setelah menjalankan perintah di atas, aplikasi akan otomatis terbuka di browser. Jika tidak terbuka secara otomatis, Anda bisa membuka browser dan mengetikkan `http://localhost:8501`.
+
+---
+
+## 4. Periksa Kode dalam `app.py`
+Pastikan kode dalam file `app.py` tidak mengandung kesalahan dan sesuai dengan struktur yang diharapkan. Berikut langkah-langkah yang perlu diperhatikan:
+
+### Langkah-langkah:
+1. **Periksa file `app.py`**:
+   Pastikan bahwa file `app.py` tidak mengandung kesalahan atau missing dependencies. Jika ada error yang muncul setelah menjalankan aplikasi, periksa apakah semua pustaka yang dibutuhkan sudah diimpor dengan benar.
+
+2. **Cek dependensi**:
+   Jika aplikasi menggunakan data atau file eksternal (seperti CSV, Excel, atau model terlatih), pastikan bahwa file tersebut ada di folder yang sesuai dengan kode.
+
+3. **Menangani kesalahan**:
+   Jika ada kesalahan dalam aplikasi, Anda bisa memeriksa pesan error yang muncul di terminal dan menyesuaikan kode di `app.py` untuk memperbaiki masalah tersebut.
+
+---
+
+Untuk versi onlinenya dapat di lihat dilink streamlit cloud berikut : 
 
 https://dicodingpenerapandatascience2-3k2f3kc83pmllwjndgwtgg.streamlit.app/
 

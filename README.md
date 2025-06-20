@@ -201,7 +201,7 @@ Pastikan kode dalam file `app.py` tidak mengandung kesalahan dan sesuai dengan s
 
 Untuk versi onlinenya dapat di lihat dilink streamlit cloud berikut : 
 
-https://dicodingpenerapandatascience2-3k2f3kc83pmllwjndgwtgg.streamlit.app/
+https://dicodingpenerapandatascience2-kew3kwbaqbbbr9gy3fdfom.streamlit.app/
 
 ## Conclusion
 

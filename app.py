@@ -4,30 +4,49 @@ import numpy as np
 import pickle
 import joblib
 
-# --- 1. Konfigurasi Halaman Streamlit ---
-st.set_page_config(layout="wide", page_title="Prediksi Performa Mahasiswa")
+# --- Konfigurasi Halaman Streamlit ---
+st.set_page_config(layout="wide", page_title="Prediksi Students' Performance")
 
-# --- 2. Judul Aplikasi Streamlit ---
-st.title('Aplikasi Prediksi Performa Mahasiswa Jaya Jaya Institut')
-st.write('Aplikasi ini memprediksi kemungkinan seorang mahasiswa untuk dropout.')
+# ---  Judul Aplikasi Streamlit ---
+st.title('Aplikasi Prediksi Students\' Performance Jaya Jaya Institut')
+st.header('Prediksi performa Kemungkinan Mahasiswa Dropout')
+st.subheader('Gunakan aplikasi ini untuk membantu menganalisis risiko dropout.')
 
-# --- 3. Memuat Model dan Pra-pemrosesan Objects ---
+# Membuat Sidebar dengan Menu Navigasi
+st.sidebar.title("Menu Navigasi")
+menu = st.sidebar.radio("Pilih Halaman:", ["Beranda", "Prediksi", "Tentang"])
+
+# Informasi pembuat aplikasi sebagai landmark di sidebar
+st.sidebar.markdown("---")
+st.sidebar.header("Info Pembuat Aplikasi")
+st.sidebar.write("**Nama:** Muhamad Thirafi Qaedi Setiawan")
+st.sidebar.write("**Email:** Qaedi68@gmail.com")
+st.sidebar.write("**github:** [ThirafiQaedi](https://github.com/ThirafiQaedi)")
+
+# Konten utama berdasarkan pilihan menu
+if menu == "Beranda":
+    st.write("Selamat datang di aplikasi prediksi performa mahasiswa.")
+elif menu == "Prediksi":
+    st.write("Input data mahasiswa untuk melakukan prediksi dropout.")
+elif menu == "Tentang":
+    st.write("Aplikasi ini dibuat oleh sebagai submisson tugas akhir penerpan datascience")
+
+
+# --- Memuat Model dan Pra-pemrosesan Objects ---
 try:
-    model = joblib.load("best_model.pkl")
+    model = joblib.load("./best_model.pkl")
 except Exception as e:
     st.error(f"Error memuat Model ML: {e}. Pastikan 'best_model.pkl' ada di direktori yang benar.")
     st.stop() 
 
 try:
-    scaler = pickle.load(open("saved_scaler.pkl", 'rb')) 
+    scaler = pickle.load(open("./saved_scaler.pkl", 'rb')) 
 except Exception as e:
     st.warning(f"Peringatan: Gagal memuat scaler: {e}. Jika model Anda memerlukan scaling, ini akan menyebabkan masalah. Pastikan 'saved_scaler.pkl' ada di direktori yang benar.")
     scaler = None 
 
-# --- 4. Definisi Mapping untuk Fitur Kategorikal ---
-marital_status_map_rev = {
-    'Single': 0, 'Married': 1, 'Widower': 2, 'Divorced': 3, 'Facto Union': 4, 'Legally Separated': 5
-}
+# ---  Definisi Mapping untuk Fitur Kategorikal ---
+
 application_mode_map_rev = {
     '1st phase - general contingent': 0, 'Ordinance No. 612/93': 1, '1st phase - special contingent (Azores Island)': 2,
     'Holders of other higher courses': 3, 'Ordinance No. 854-B/99': 4, 'International student (bachelor)': 5,
@@ -37,13 +56,11 @@ application_mode_map_rev = {
     'Change of course': 13, 'Technological specialization diploma holders': 14, 'Change of institution/course': 15,
     'Short cycle diploma holders': 16, 'Change of institution/course (International)': 17
 }
-course_map_rev = {
-    'Biofuel Production Technologies': 0, 'Animation and Multimedia Design': 1, 'Social Service (evening attendance)': 2,
-    'Agronomy': 3, 'Communication Design': 4, 'Veterinary Nursing': 5, 'Informatics Engineering': 6, 'Equinculture': 7,
-    'Management': 8, 'Social Service': 9, 'Tourism': 10, 'Nursing': 11, 'Oral Hygiene': 12,
-    'Advertising and Marketing Management': 13, 'Journalism and Communication': 14, 'Basic Education': 15,
-    'Management (evening attendance)': 16
+marital_status_map_rev = {
+    'Single': 0, 'Married': 1, 'Widower': 2, 'Divorced': 3, 'Facto Union': 4, 'Legally Separated': 5
 }
+
+
 daytime_evening_attendance_map_rev = {'Daytime': 1, 'Evening': 0}
 previous_qualification_map_rev = {
     'Secondary education': 0, "Higher education - bachelor's degree": 1, 'Higher education - degree': 2,
@@ -54,6 +71,14 @@ previous_qualification_map_rev = {
     'Technological specialization course': 13, 'Higher education - degree (1st cycle)': 14,
     'Professional higher technical course': 15, 'Higher education - master (2nd cycle)': 16
 }
+course_map_rev = {
+    'Biofuel Production Technologies': 0, 'Animation and Multimedia Design': 1, 'Social Service (evening attendance)': 2,
+    'Agronomy': 3, 'Communication Design': 4, 'Veterinary Nursing': 5, 'Informatics Engineering': 6, 'Equinculture': 7,
+    'Management': 8, 'Social Service': 9, 'Tourism': 10, 'Nursing': 11, 'Oral Hygiene': 12,
+    'Advertising and Marketing Management': 13, 'Journalism and Communication': 14, 'Basic Education': 15,
+    'Management (evening attendance)': 16
+}
+
 mothers_qualification_map_rev = {
     'Secondary Education - 12th Year of Schooling or Eq.': 0, "Higher Education - Bachelor's Degree": 1, 'Higher Education - Degree': 2,
     "Higher Education - Master's": 3, 'Higher Education - Doctorate': 4, 'Frequency of Higher Education': 5,
@@ -138,107 +163,120 @@ tuition_fees_map_rev = {'No': 0, 'Yes': 1}
 gender_map_rev = {'Female': 0, 'Male': 1}
 scholarship_holder_map_rev = {'No': 0, 'Yes': 1}
 
-# --- 5. Input Pengguna (sesuaikan dengan fitur model Anda) ---
+# Input Pengguna (sesuaikan dengan fitur model)
 st.header('Masukkan Data Mahasiswa:')
 
+# --- Kolom Input untuk Data Mahasiswa ---
 col1, col2, col3 = st.columns(3)
 
 with col1:
+    st.subheader("Informasi Pribadi")
     Marital_status_display = st.selectbox(
         'Marital Status',
         list(marital_status_map_rev.keys()),
-        help="Select the student's marital status."
+        help="Pilih status pernikahan mahasiswa."
     )
     Application_mode_display = st.selectbox(
         'Application Mode',
         list(application_mode_map_rev.keys()),
-        help="Select the mode of application for admission."
+        help="Pilih mode aplikasi penerimaan mahasiswa."
     )
     Course_display = st.selectbox(
         'Course',
         list(course_map_rev.keys()),
-        help="Select the academic course the student is enrolled in."
+        help="Pilih program studi yang diambil mahasiswa."
     )
     Daytime_evening_attendance_display = st.selectbox(
         'Attendance Type',
         list(daytime_evening_attendance_map_rev.keys()),
-        help="Select whether the student attends daytime or evening classes."
+        help="Pilih jenis waktu perkuliahan mahasiswa (siang/malam)."
     )
     Previous_qualification_display = st.selectbox(
         'Previous Qualification',
         list(previous_qualification_map_rev.keys()),
-        help="Select the student's previous highest academic qualification."
-    )
-    Mothers_qualification_display = st.selectbox(
-        "Mother's Qualification",
-        list(mothers_qualification_map_rev.keys()),
-        help="Select the highest academic qualification of the student's mother."
-    )
-    Fathers_qualification_display = st.selectbox(
-        "Father's Qualification",
-        list(fathers_qualification_map_rev.keys()),
-        help="Select the highest academic qualification of the student's father."
+        help="Pilih kualifikasi pendidikan terakhir mahasiswa."
     )
 
+
 with col2:
+    st.subheader("Informasi Orang Tua")
     Mothers_occupation_display = st.selectbox(
         "Mother's Occupation",
         list(mothers_occupation_map_rev.keys()),
-        help="Select the occupation of the student's mother."
+        help="Pilih pekerjaan ibu mahasiswa."
     )
     Fathers_occupation_display = st.selectbox(
         "Father's Occupation",
         list(fathers_occupation_map_rev.keys()),
-        help="Select the occupation of the student's father."
+        help="Pilih pekerjaan ayah mahasiswa."
     )
+    Mothers_qualification_display = st.selectbox(
+        "Mother's Qualification",
+        list(mothers_qualification_map_rev.keys()),
+        help="Pilih kualifikasi pendidikan ibu mahasiswa."
+    )
+    Fathers_qualification_display = st.selectbox(
+        "Father's Qualification",
+        list(fathers_qualification_map_rev.keys()),
+        help="Pilih kualifikasi pendidikan ayah mahasiswa."
+    )
+    
+
+with col3:
+    st.subheader("Informasi Akademik dan Demografis Student")
+    Age_at_enrollment = st.number_input('Age at Enrollment', min_value=17, max_value=80, value=20, help="Usia mahasiswa saat pertama kali mendaftar.")
+    Admission_grade = st.number_input('Admission Grade', min_value=0.0, max_value=200.0, value=127.0, help="Nilai saat penerimaan mahasiswa.")
+    Previous_qualification_grade = st.number_input('Previous Qualification Grade', min_value=0.0, max_value=200.0, value=122.0, help="Nilai kualifikasi pendidikan terakhir mahasiswa.")
+    GDP = st.number_input('GDP per capita (year of enrollment)', min_value=-10.0, max_value=20.0, value=1.0, format="%.2f", help="GDP per kapita negara asal mahasiswa saat tahun pendaftaran.")
+    Application_order = st.number_input('Application Order', min_value=1, max_value=10, value=5, help="Urutan aplikasi mahasiswa (misalnya 1st, 2nd, dll.).")
     Displaced_display = st.radio(
         'Displaced Student',
         list(displaced_map_rev.keys()),
-        help="Is the student displaced (e.g., moved due to external factors)?"
+        help="Apakah mahasiswa berasal dari daerah yang terdampak (misalnya pindah karena faktor eksternal)?"
     )
     Debtor_display = st.radio(
         'Debtor Status',
         list(debtor_map_rev.keys()),
-        help="Is the student a debtor (i.e., has outstanding debts)?"
+        help="Apakah mahasiswa memiliki utang (belum melunasi pembayaran)?"
     )
     Tuition_fees_up_to_date_display = st.radio(
         'Tuition Fees Up-to-Date',
         list(tuition_fees_map_rev.keys()),
-        help="Is the student's tuition fee payment up-to-date?"
+        help="Apakah pembayaran biaya kuliah mahasiswa sudah terbayar tepat waktu?"
     )
     Gender_display = st.selectbox(
         'Gender',
         list(gender_map_rev.keys()),
-        help="Select the student's gender."
+        help="Pilih jenis kelamin mahasiswa."
     )
     Scholarship_holder_display = st.radio(
         'Scholarship Holder',
         list(scholarship_holder_map_rev.keys()),
-        help="Is the student a scholarship holder?"
+        help="Apakah mahasiswa menerima beasiswa?"
     )
 
-with col3:
-    Age_at_enrollment = st.number_input('Age at Enrollment', min_value=17, max_value=80, value=20, help="Student's age when first enrolling.")
-    Admission_grade = st.number_input('Admission Grade', min_value=0.0, max_value=200.0, value=127.0, help="Student's admission grade.")
-    Previous_qualification_grade = st.number_input('Previous Qualification Grade', min_value=0.0, max_value=200.0, value=122.0, help="Student's previous qualification grade.")
-    GDP = st.number_input('GDP per capita (year of enrollment)', min_value=-10.0, max_value=20.0, value=1.0, format="%.2f", help="Gross Domestic Product per capita of the student's origin country at enrollment year.")
-    Application_order = st.number_input('Application Order', min_value=1, max_value=10, value=5, help="Order of the student's application (e.g., 1st, 2nd, etc.).")
-    Curricular_units_1st_sem_enrolled = st.number_input('1st Sem Units Enrolled', min_value=0, max_value=50, value=0, help="Number of curricular units enrolled in the 1st semester.")
-    Curricular_units_1st_sem_evaluations = st.number_input('1st Sem Evaluations', min_value=0, max_value=50, value=0, help="Number of evaluations in the 1st semester.")
-    Curricular_units_1st_sem_approved = st.number_input('1st Sem Units Approved', min_value=0, max_value=50, value=0, help="Number of curricular units approved in the 1st semester.")
-    Curricular_units_1st_sem_grade = st.number_input('1st Sem Grade', min_value=0.0, max_value=20.0, value=0.0, step=0.1, help="Grade of curricular units in the 1st semester.")
-    Curricular_units_1st_sem_without_evaluations = st.number_input('1st Sem Units without Evaluations', min_value=0, max_value=50, value=0, help="Number of curricular units without evaluations in the 1st semester.")
-    Curricular_units_2nd_sem_credited = st.number_input('2nd Sem Units Credited', min_value=0, max_value=50, value=0, help="Number of curricular units credited in the 2nd semester.")
-    Curricular_units_2nd_sem_enrolled = st.number_input('2nd Sem Units Enrolled', min_value=0, max_value=50, value=0, help="Number of curricular units enrolled in the 2nd semester.")
-    Curricular_units_2nd_sem_evaluations = st.number_input('2nd Sem Evaluations', min_value=0, max_value=50, value=0, help="Number of evaluations in the 2nd semester.")
-    Curricular_units_2nd_sem_approved = st.number_input('2nd Sem Units Approved', min_value=0, max_value=50, value=0, help="Number of curricular units approved in the 2nd semester.")
-    Curricular_units_2nd_sem_grade = st.number_input('2nd Sem Grade', min_value=0.0, max_value=20.0, value=0.0, step=0.1, help="Grade of curricular units in the 2nd semester.")
-    Curricular_units_2nd_sem_without_evaluations = st.number_input('2nd Sem Units without Evaluations', min_value=0, max_value=50, value=0, help="Number of curricular units without evaluations in the 2nd semester.")
+col4, col5 = st.columns(2)
 
+with col4:
+    st.markdown("### Semester Pertama")
+    Curricular_units_1st_sem_enrolled = st.number_input('1st Sem Units Enrolled', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang diambil pada semester pertama.")
+    Curricular_units_1st_sem_evaluations = st.number_input('1st Sem Evaluations', min_value=0, max_value=50, value=0, help="Jumlah evaluasi yang diikuti pada semester pertama.")
+    Curricular_units_1st_sem_approved = st.number_input('1st Sem Units Approved', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang disetujui pada semester pertama.")
+    Curricular_units_1st_sem_grade = st.number_input('1st Sem Grade', min_value=0.0, max_value=20.0, value=0.0, step=0.1, help="Nilai unit kurikuler pada semester pertama.")
+    Curricular_units_1st_sem_without_evaluations = st.number_input('1st Sem Units without Evaluations', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang tidak dievaluasi pada semester pertama.")
 
-# --- 6. Tombol Prediksi ---
+with col5:    
+    st.markdown("### Semester Kedua")
+    Curricular_units_2nd_sem_credited = st.number_input('2nd Sem Units Credited', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang disetujui pada semester kedua.")
+    Curricular_units_2nd_sem_enrolled = st.number_input('2nd Sem Units Enrolled', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang diambil pada semester kedua.")
+    Curricular_units_2nd_sem_evaluations = st.number_input('2nd Sem Evaluations', min_value=0, max_value=50, value=0, help="Jumlah evaluasi yang diikuti pada semester kedua.")
+    Curricular_units_2nd_sem_approved = st.number_input('2nd Sem Units Approved', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang disetujui pada semester kedua.")
+    Curricular_units_2nd_sem_grade = st.number_input('2nd Sem Grade', min_value=0.0, max_value=20.0, value=0.0, step=0.1, help="Nilai unit kurikuler pada semester kedua.")
+    Curricular_units_2nd_sem_without_evaluations = st.number_input('2nd Sem Units without Evaluations', min_value=0, max_value=50, value=0, help="Jumlah unit kurikuler yang tidak dievaluasi pada semester kedua.")
+
+# ---  Tombol Prediksi ---
 if st.button('Prediksi'):
-    # --- 7. Pra-pemrosesan Input untuk Model ---
+    # --- Pra-pemrosesan Input untuk Model ---
     marital_status_encoded = marital_status_map_rev[Marital_status_display]
     application_mode_encoded = application_mode_map_rev[Application_mode_display]
     course_encoded = course_map_rev[Course_display]
@@ -335,19 +373,19 @@ if st.button('Prediksi'):
 
     input_df = pd.DataFrame([final_features_for_df]) 
 
-    # --- 7. Make Prediction ---
+    # --- Buat Prediction ---
     try:
         prediction = model.predict(input_df)
         prediction_proba = model.predict_proba(input_df)
 
-        st.subheader('Prediction Result:')
+        st.subheader('Hasil Prediksi:')
         if prediction[0] == 1: 
-            st.warning('The student is predicted to **DROP OUT**')
+            st.warning('Mahasiswa ini diprediksikan **DROP OUT**')
         else:
-            st.success('The student is predicted **NOT to DROP OUT**')
+            st.success('Mahasiswa ini diprediksikan **TIDAK DROP OUT**')
 
-        st.write(f'Probability of Dropout: **{prediction_proba[0][1]*100:.2f}%**')
-        st.write(f'Probability of Safe, Not Dropping Out: **{prediction_proba[0][0]*100:.2f}%**')
+        st.write(f'Probability Dropout: **{prediction_proba[0][1]*100:.2f}%**')
+        st.write(f'Probability Safe, TIDAK Drop Out: **{prediction_proba[0][0]*100:.2f}%**')
 
         st.write("---")
         st.info("Note: This prediction is probabilistic and should be used as an indicator. Always consider individual circumstances.")

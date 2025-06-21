@@ -34,8 +34,7 @@ st.set_page_config(layout="wide", page_title="Prediksi Student's Performance")
 
 # ---  Judul Aplikasi Streamlit ---
 st.title('Aplikasi Prediksi Students\' Performance Jaya Jaya Institut')
-st.header('Prediksi performa Kemungkinan Mahasiswa Dropout')
-st.subheader('Gunakan aplikasi ini untuk membantu menganalisis risiko dropout.')
+
 
 # Membuat Sidebar dengan Menu Navigasi
 st.sidebar.title("Menu Navigasi")
@@ -172,7 +171,9 @@ scholarship_holder_map_rev = {'No': 0, 'Yes': 1}
 
 # Konten utama berdasarkan pilihan menu
 if menu == "Beranda":
-    st.subheader("🎓 Selamat Datang di Aplikasi Performa Mahasiswa")
+    st.header("🎓 Selamat Datang di Aplikasi Performa Mahasiswa")
+    st.subheader('Prediksi performa Kemungkinan Mahasiswa Dropout')
+    st.subheader('Gunakan aplikasi ini untuk membantu menganalisis risiko dropout.')
 
     st.markdown("""
         Selamat datang di Aplikasi Prediksi Performa Mahasiswa Jaya Jaya Institut

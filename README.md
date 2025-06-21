@@ -13,7 +13,7 @@ Permasalahan bisnis utama yang akan diselesaikan adalah:
 -  **Tingkat Dropout Tinggi**: Banyaknya mahasiswa yang tidak melanjutkan pendidikan mereka hingga lulus menyebabkan kerugian finansial bagi institusi.
 - **Risiko Reputasi**: Dropout yang tinggi dapat memengaruhi reputasi Jaya Jaya Institut di kalangan masyarakat dan calon mahasiswa.
 - **Welfare Mahasiswa**: Mahasiswa yang mengalami dropout mungkin menghadapi masalah pribadi atau akademik yang dapat diatasi dengan bimbingan yang lebih baik.
-- Pentingnya Pengembangan Sistem Monitoring Komprehensif: Untuk mendukung keputusan strategis yang lebih baik, institusi membutuhkan implementasi sistem monitoring yang mampu melacak tren dan faktor-faktor terkait dropout secara real-time.
+- **Pengembangan Sistem Monitoring Komprehensif**: Untuk mendukung keputusan strategis yang lebih baik, institusi membutuhkan implementasi sistem monitoring yang mampu melacak tren dan faktor-faktor terkait dropout secara real-time.
   
 ### Cakupan Proyek
 

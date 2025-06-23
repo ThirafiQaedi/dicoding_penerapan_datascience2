@@ -106,12 +106,15 @@ Dashboard ini dirancang untuk menyajikan wawasan mendalam mengenai status dropou
 
 
 ## Menjalankan Prototype Sistem Machine Learning
-
+### Halaman Awal
+![image](/src/SS_DS2_streamlit(0).png)
+### halaman Prediksi
+![image](/src/SS_DS2_streamlit(1).png)
 ![image](/src/SS_DS2_streamlit(2).png)
 ![image](/src/SS_DS2_streamlit(3).png)
 ![image](/src/SS_DS2_streamlit(4).png)
-![image](/src/SS_DS2_streamlit(1).png)
-
+### Halaman Tentang
+![image](/src/SS_DS2_streamlit(5).png)
 
 Prototype ini digunakan dengan cara meninput manual. Adapun cara menjalankannya terbagi menjadi dua yaitu secara lokal dan online.
 
@@ -201,7 +204,7 @@ Pastikan kode dalam file `app.py` tidak mengandung kesalahan dan sesuai dengan s
 
 Untuk versi onlinenya dapat di lihat dilink streamlit cloud berikut : 
 
-https://dicodingpenerapandatascience2-kew3kwbaqbbbr9gy3fdfom.streamlit.app/
+https://dicodingpenerapandatascience2-jn83rx4erutgp3omwtratn.streamlit.app/
 
 ## Conclusion
 

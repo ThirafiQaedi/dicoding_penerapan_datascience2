@@ -1,1 +1,2 @@
 link dashboard : https://lookerstudio.google.com/reporting/0113074f-0ad4-4a57-900b-810672fbcd43
+link streamlit : https://dicodingpenerapandatascience2-jn83rx4erutgp3omwtratn.streamlit.app/

@@ -26,8 +26,6 @@ import joblib
 import io
 import pickle
 import os
-import statsmodels.formula.api as ols
-import statsmodels.api as sm
 from sqlalchemy import create_engine
 from itertools import combinations
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score, roc_curve
@@ -60,7 +58,7 @@ Student_df.columns.tolist()
 
 Student_df.isna().sum()
 
-Student_df.duplicated().sum()
+print(Student_df.duplicated().sum())
 
 """Insight:
 
@@ -111,7 +109,7 @@ Dataset ini berisi informasi tentang **4424 mahasiswa** dengan **37 kolom**. Dat
 - Dataset ini menyediakan berbagai fitur, termasuk **student demographics**, **educational background**, dan **academic performance**.
 - **Variabel Kategorikal**: Banyak kolom seperti marital status, nationality, dan course  adalah kategorikal, dengan masing-masing memiliki kategori yang telah ditentukan sebelumnya.
 - **Variabel Numerik**: Kolom seperti admission grade, age at enrollment, and curricular units adalah numerik, yang mewakili kuantitas yang dapat diukur.
-- **Data yang Hilang**: Dataset ini tidak memiliki nilai yang hilang, memastikan integritas data.
+- **Data yang Hilang**: Dataset ini tidak memiliki nilai yang hilang atau *missing value*, memastikan integritas data.
 - **Data Duplikat**: Dataset ini tidak memiliki nilai yang duplikat, memastikan integritas data.
 
 ### Penjelasan data setiap kolum
@@ -167,7 +165,7 @@ for column in cate_columns_by_info:
 
 Student_df.describe()
 
-"""Perhatikan bahwa nilai statistik ini cenderung memperlakukan kategori sebagai variabel numerik. Oleh karena itu, diperlukan penanganan khusus agar statistik deskriptif yang ditampilkan hanya mencakup variabel numerik yang sesungguhnya.
+"""Perhatikan bahwa nilai statistik ini cenderung memperlakukan kategori sebagai variabel numerik. Oleh karena itu, diperlukan penanganan khusus di proses prosessing selanjutnya agar statistik deskriptif yang ditampilkan hanya mencakup variabel numerik yang sesungguhnya dan variable kategori terbaca kembali jadi kategori
 
 ####EDA Sebelum prosessing
 
@@ -286,6 +284,15 @@ for idx, kategori in enumerate(Lencoder.classes_):
 """### Statistic deskripsif setiap Nilai Kolom Numeric"""
 
 Student_df.describe()
+
+"""Safe dataframe untuk diapakai di dashboard"""
+
+Student_df.to_csv('/content/Student_df_dashboard.csv', index=False)
+
+# simpan di Supabase DB
+URL = "postgresql://postgres.dbxwaaijfazhkklckanm:MtQsTHR081099@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres"
+engine = create_engine(URL)
+Student_df.to_sql('Student_df_dashboard', engine)
 
 """### EDA-post preprosessing"""
 
@@ -434,7 +441,7 @@ Berikut adalah analisis dan insight yang diperoleh dari heatmap:
 
 ##### Kategorikal feature
 
-Histogram Categorical features
+Bar Chart Categorical features
 """
 
 # make function
@@ -517,11 +524,10 @@ Berdasarkan grafik yang diberikan, berikut adalah beberapa analisis dan wawasan 
 15. **Distribusi Status yang Terenkripsi (`Encoded_Status`)**
    - Kolom `Encoded_Status` mencerminkan hasil dari encoding yang dilakukan pada kolom `Status`, di mana angka 0 menunjukkan mahasiswa yang **drop-out** dan angka 1 menunjukkan mahasiswa yang **lulus**.
 
-**Pie chart categorical feature**
+**Doughnut chart categorical feature**
 """
 
-# Make Function
-def plot_pie_charts(df, categorical_columns, charts_per_row=3):
+def plot_donut_charts(df, categorical_columns, charts_per_row=3):
     total_cols = len(categorical_columns)
     total_rows = (total_cols + charts_per_row - 1) // charts_per_row
 
@@ -536,11 +542,13 @@ def plot_pie_charts(df, categorical_columns, charts_per_row=3):
         labels = category_counts.index
         sizes = category_counts.values
 
-        # Mengatur warna untuk pie chart
+        # Mengatur warna untuk donut chart
         colors = ['#FF6347', '#32CD32', '#1E90FF', '#FFD700', '#8A2BE2']
 
-        # Membuat pie chart dengan warna yang berbeda
-        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors[:len(labels)])
+        # Membuat donut chart dengan lebar cincin
+        wedges, texts, autotexts = ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors[:len(labels)], wedgeprops={'width': 0.3})
+
+        # Mengatur title
         ax.set_title(f'{col} Distribution', fontsize=12)
 
     # Menghapus subplot yang tidak digunakan jika jumlah kolom kurang dari subplot yang tersedia
@@ -552,26 +560,26 @@ def plot_pie_charts(df, categorical_columns, charts_per_row=3):
     plt.show()
 
 # Call fungsi
-plot_pie_charts(Student_df, pos_categorical_features)
+plot_donut_charts(Student_df, pos_categorical_features)
 
-"""**Analisis dan Insight dari Pie Chart Kategorikal**
+"""# Analisis dan Insight dari Donut Chart Kategorikal
 
-Berdasarkan pie chart yang diberikan, berikut adalah analisis dan wawasan yang dapat diperoleh dari distribusi berbagai kolom kategorikal dalam dataset:
+Berdasarkan donut chart yang diberikan, berikut adalah analisis dan wawasan yang dapat diperoleh dari distribusi berbagai kolom kategorikal dalam dataset:
 
 1. **Distribusi Status Pernikahan (`Marital_status`)**
-   - **Dominasi**: Sebagian besar mahasiswa adalah **lajang** (kategori 1) dengan persentase mencapai 88.6%. Hanya sebagian kecil mahasiswa yang berada dalam kategori lainnya, seperti menikah (kategori 2).
+   - **Dominasi**: Sebagian besar mahasiswa adalah **single** (kategori 1) dengan persentase mencapai **88.6%**. Hanya sebagian kecil mahasiswa yang berada dalam kategori lainnya, seperti menikah (kategori 2).
 
 2. **Distribusi Mode Pendaftaran (`Application_mode`)**
-   - **Dominasi Mode Pendaftaran Tertentu**: Sebagian besar mahasiswa menggunakan mode **pendaftaran tertentu**, dengan kategori terbesar mencapai sekitar 38.6%. Ini menunjukkan adanya mode pendaftaran yang lebih dominan daripada lainnya.
+   - **Dominasi Mode Pendaftaran Tertentu**: Sebagian besar mahasiswa menggunakan mode **pendaftaran tertentu**, dengan kategori terbesar mencapai sekitar **28.6%**. Ini menunjukkan adanya mode pendaftaran yang lebih dominan daripada lainnya.
 
 3. **Distribusi Program Studi (`Course`)**
-   - **Distribusi yang Beragam**: Program studi menunjukkan distribusi yang cukup beragam, namun sebagian besar mahasiswa berada pada beberapa program studi dengan frekuensi yang jauh lebih tinggi, misalnya pada program studi dengan kode **9003** yang menunjukkan sekitar 17.3%.
+   - **Distribusi yang Beragam**: Program studi menunjukkan distribusi yang cukup beragam, namun sebagian besar mahasiswa berada pada beberapa program studi dengan frekuensi yang jauh lebih tinggi, misalnya pada program studi dengan kode **171** yang menunjukkan sekitar **17.3%**.
 
 4. **Distribusi Kualifikasi Sebelumnya (`Previous_qualification`)**
-   - **Latar Belakang Pendidikan Menengah**: Sebagian besar mahasiswa datang dengan **kualifikasi pendidikan menengah** (kategori 1) dengan persentase 84%. Ini menunjukkan bahwa mayoritas mahasiswa memiliki latar belakang pendidikan menengah sebelum melanjutkan ke perguruan tinggi.
+   - **Latar Belakang Pendidikan Menengah**: Sebagian besar mahasiswa datang dengan **kualifikasi pendidikan menengah** (kategori 1) dengan persentase **84%**. Ini menunjukkan bahwa mayoritas mahasiswa memiliki latar belakang pendidikan menengah sebelum melanjutkan ke perguruan tinggi.
 
 5. **Distribusi Kewarganegaraan (`Nationality`)**
-   - **Dominasi Kewarganegaraan Lokal**: Sebagian besar mahasiswa berasal dari kewarganegaraan yang sama (kategori 0) dengan persentase mencapai 97.5%, menandakan mayoritas mahasiswa adalah domestik, dan hanya sedikit yang berasal dari luar negeri.
+   - **Dominasi Kewarganegaraan Lokal**: Sebagian besar mahasiswa berasal dari kewarganegaraan yang sama (kategori 0) dengan persentase mencapai **97.5%**, menandakan mayoritas mahasiswa adalah domestik, dan hanya sedikit yang berasal dari luar negeri.
 
 6. **Distribusi Kualifikasi Ibu dan Ayah (`Mothers_qualification`, `Fathers_qualification`)**
    - **Kualifikasi Pendidikan Orang Tua**: Kolom-kolom ini menunjukkan bahwa sebagian besar ibu dan ayah mahasiswa memiliki latar belakang pendidikan yang lebih tinggi, dengan beberapa kategori seperti **sarjana** dan **magister** menjadi dominan.
@@ -583,37 +591,33 @@ Berdasarkan pie chart yang diberikan, berikut adalah analisis dan wawasan yang d
    - **Kebanyakan Mahasiswa Tidak Displaced**: Sebagian besar mahasiswa **bukan berasal dari latar belakang displaced** (kategori 0), hanya sedikit mahasiswa yang berasal dari latar belakang displaced.
 
 9. **Distribusi Kebutuhan Pendidikan Khusus (`Educational_special_needs`)**
-   - **Hanya Beberapa Mahasiswa yang Memiliki Kebutuhan Khusus**: Mayoritas mahasiswa **tidak memerlukan pendidikan khusus** dengan hanya 1.2% mahasiswa yang membutuhkan pendidikan khusus.
+   - **Hanya Beberapa Mahasiswa yang Memiliki Kebutuhan Khusus**: Mayoritas mahasiswa **tidak memerlukan pendidikan khusus** dengan hanya **1.2%** mahasiswa yang membutuhkan pendidikan khusus.
 
 10. **Distribusi Status Pembayaran (`Debtor`)**
-   - **Mayoritas Tidak Berutang**: Sebagian besar mahasiswa **bukan debitur** (kategori 0), hanya 11.4% yang berutang.
+   - **Mayoritas Tidak Berutang**: Sebagian besar mahasiswa **bukan debitur** (kategori 0), hanya **11.4%** yang berutang.
 
 11. **Distribusi Pembayaran Biaya Kuliah (`Tuition_fees_up_to_date`)**
-   - **Pembayaran Biaya Kuliah Tepat Waktu**: Sebagian besar mahasiswa **memiliki pembayaran biaya kuliah yang tepat waktu**, dengan 88.1% mahasiswa membayar tepat waktu.
+   - **Pembayaran Biaya Kuliah Tepat Waktu**: Sebagian besar mahasiswa **memiliki pembayaran biaya kuliah yang tepat waktu**, dengan **88.1%** mahasiswa membayar tepat waktu.
 
 12. **Distribusi Jenis Kelamin (`Gender`)**
-   - **Dominasi Laki-laki**: Distribusi menunjukkan dominasi jenis kelamin **laki-laki** (64.8%), dengan **perempuan** memiliki persentase lebih rendah (35.2%).
+   - **Dominasi Laki-laki**: Distribusi menunjukkan dominasi jenis kelamin **laki-laki** (**64.8%**), dengan **perempuan** memiliki persentase lebih rendah (**35.2%**).
 
 13. **Distribusi Penerima Beasiswa (`Scholarship_holder`)**
-   - **Sebagian Besar Mahasiswa Tidak Menerima Beasiswa**: 75.2% mahasiswa **bukan penerima beasiswa**, hanya 24.8% yang mendapatkan beasiswa.
+   - **Sebagian Besar Mahasiswa Tidak Menerima Beasiswa**: **75.2%** mahasiswa **bukan penerima beasiswa**, hanya **24.8%** yang mendapatkan beasiswa.
 
 14. **Distribusi Status Akhir (`Status`)**
-   - **Sebagian Besar Mahasiswa Lulus**: Sebagian besar mahasiswa **lulus** (kategori 1), dengan 67.9% mahasiswa lulus dan 32.1% yang drop-out.
+   - **Sebagian Besar Mahasiswa Aman (Safe)**: Sebagian besar mahasiswa **aman** (kategori **1**), dengan **67.9%** mahasiswa aman dan **32.1%** yang drop-out.
 
 15. **Distribusi Status Terenkripsi (`Encoded_Status`)**
-   - **Hasil Encoding**: Kolom `Encoded_Status` menunjukkan hasil encoding dari kolom `Status`, di mana kategori 1 menunjukkan **lulus** dan kategori 0 menunjukkan **drop-out**.
+   - **Hasil Encoding**: Kolom `Encoded_Status` menunjukkan hasil encoding dari kolom `Status`, di mana kategori **1** menunjukkan **aman (safe)** dan kategori **0** menunjukkan **drop-out**.
 
-**Insight Utama:**
-- **Keseimbangan dalam Distribusi**: Banyak fitur menunjukkan ketidakseimbangan yang signifikan, seperti **status pernikahan**, **kewarganegaraan**, **status pembayaran biaya kuliah**, dan **kebutuhan pendidikan khusus**. Misalnya, sebagian besar mahasiswa memiliki status pernikahan lajang, berasal dari kewarganegaraan yang sama, dan memiliki biaya kuliah yang terbayar tepat waktu.
+# Insight Utama:
+- **Keseimbangan dalam Distribusi**: Banyak fitur menunjukkan ketidakseimbangan yang signifikan, seperti **status pernikahan**, **kewarganegaraan**, **status pembayaran biaya kuliah**, dan **kebutuhan pendidikan khusus**. Misalnya, sebagian besar mahasiswa memiliki status pernikahan **single**, berasal dari kewarganegaraan yang sama, dan memiliki biaya kuliah yang terbayar tepat waktu.
 - **Fitur Ekonomi dan Pembayaran**: Kolom **`Debtor`** dan **`Tuition_fees_up_to_date`** memberikan gambaran bahwa mayoritas mahasiswa tidak berutang dan memiliki pembayaran biaya kuliah yang tepat waktu.
-- **Mahasiswa Lulus**: Sebagian besar mahasiswa **lulus**, namun sekitar 32.1% mahasiswa drop-out, yang bisa menjadi area untuk dianalisis lebih lanjut mengenai faktor-faktor yang berkontribusi pada angka drop-out.
+- **Mahasiswa Aman (Safe)**: Sebagian besar mahasiswa **aman**, namun sekitar **32.1%** mahasiswa drop-out, yang bisa menjadi area untuk dianalisis lebih lanjut mengenai faktor-faktor yang berkontribusi pada angka drop-out.
 
-
+## Modeling
 """
-
-
-
-"""## Modeling"""
 
 Student_df.info()
 
@@ -623,36 +627,22 @@ X=fitur
 , Y=target
 """
 
-X_var = ['Marital_status',
- 'Application_mode',
- 'Application_order',
- 'Course',
- 'Daytime_evening_attendance',
- 'Previous_qualification',
- 'Previous_qualification_grade',
- 'Mothers_qualification',
- 'Fathers_qualification',
- 'Mothers_occupation',
- 'Fathers_occupation',
- 'Admission_grade',
- 'Displaced',
- 'Debtor',
- 'Tuition_fees_up_to_date',
- 'Gender',
- 'Scholarship_holder',
- 'Age_at_enrollment',
- 'Curricular_units_1st_sem_enrolled',
- 'Curricular_units_1st_sem_evaluations',
- 'Curricular_units_1st_sem_approved',
- 'Curricular_units_1st_sem_grade',
- 'Curricular_units_1st_sem_without_evaluations',
- 'Curricular_units_2nd_sem_credited',
- 'Curricular_units_2nd_sem_enrolled',
- 'Curricular_units_2nd_sem_evaluations',
- 'Curricular_units_2nd_sem_approved',
- 'Curricular_units_2nd_sem_grade',
- 'Curricular_units_2nd_sem_without_evaluations',
- 'GDP']
+X_var = Student_df.columns.tolist()
+
+drop_cols_X = [
+    'Nacionality',
+    'Educational_special_needs',
+    'International',
+    'Curricular_units_1st_sem_credited',
+    'Unemployment_rate',
+    'Inflation_rate',
+    'Status',
+    'Encoded_Status'
+]
+for col in drop_cols_X:
+    if col in X_var:
+        X_var.remove(col)
+X_var
 
 Y_var = ['Encoded_Status']
 

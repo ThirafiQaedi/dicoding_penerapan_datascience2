@@ -108,7 +108,7 @@ Dashboard ini dirancang untuk menyajikan wawasan mendalam mengenai status dropou
 ## Menjalankan Prototype Sistem Machine Learning
 ### Halaman Awal
 ![image](/src/SS_DS2_streamlit(0).png)
-### halaman Prediksi
+### Halaman Prediksi
 ![image](/src/SS_DS2_streamlit(1).png)
 ![image](/src/SS_DS2_streamlit(2).png)
 ![image](/src/SS_DS2_streamlit(3).png)
